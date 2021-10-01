@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
@@ -38,6 +40,9 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
         break;
       case TypeVideoDatasource.asset:
         _controller = VideoPlayerController.asset(widget.datasource);
+        break;
+      case TypeVideoDatasource.file:
+        _controller = VideoPlayerController.file(File( widget.datasource));
         break;
       default:
     }
