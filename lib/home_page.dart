@@ -13,8 +13,18 @@ class HomePage extends StatelessWidget {
         title: Text('Video assets'),
       ),
       body: ListView(children: [
-        CustomVideoPlayer(),
-        // CustomVideoPlayer(),
+        CustomVideoPlayer(
+            type: TypeVideoDatasource.network,
+            datasource:
+                'https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
+        CustomVideoPlayer(
+            type: TypeVideoDatasource.network,
+            datasource:
+                'https://media.istockphoto.com/videos/abstract-background-with-3d-rings-and-rotating-parts-clean-and-modern-video-id1248225100'),
+         CustomVideoPlayer(
+           type: TypeVideoDatasource.asset,
+           datasource: 'assets/video_local.mp4',
+         ),
         // CustomVideoPlayer(),
         // CustomVideoPlayer(),
         // CustomVideoPlayer(),
