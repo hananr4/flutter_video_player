@@ -1,12 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
-class CustomVideoPlayer extends StatefulWidget {
-  final VideoPlayerController controller;
 
-  const CustomVideoPlayer({
+enum TipoVideoDatasource{
+  asset,
+  network,
+  file
+}
+
+class CustomVideoPlayer extends StatefulWidget {
+  // final controller = VideoPlayerController.asset('assets/video_local.mp4');
+  
+  final controller = VideoPlayerController.network('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4');
+  
+  CustomVideoPlayer({
     Key? key,
-    required this.controller,
   }) : super(key: key);
 
   @override
@@ -29,57 +37,57 @@ class _CustomVideoPlayerState extends State<CustomVideoPlayer> {
       }
     });
 
-    return Column(
-      children: [
-        widget.controller.value.isInitialized
-            ? Center(
-                child: AspectRatio(
-                  aspectRatio: widget.controller.value.aspectRatio,
-                  child: VideoPlayer(widget.controller),
-                ),
-              )
-            : Container(
-                child: Text('Cargando'),
+    return FutureBuilder(
+        future: widget.controller.initialize(),
+        builder: (context, snapshot) {
+          return Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              widget.controller.value.isInitialized
+                  ? AspectRatio(
+                      aspectRatio: widget.controller.value.aspectRatio,
+                      child: VideoPlayer(widget.controller),
+                    )
+                  : Container(
+                      child: Text('Cargando'),
+                    ),
+              VideoProgressIndicator(
+                widget.controller,
+                allowScrubbing: true,
               ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              onPressed: () {
-                widget.controller.seekTo(Duration(seconds: 0));
-              },
-              icon: Icon(Icons.first_page, size: 50),
-            ),
-            IconButton(
-              onPressed: () {
-                if (startPlaying)
-                  widget.controller.pause();
-                else
-                  widget.controller.play();
-                setState(() {
-                  startPlaying = !startPlaying;
-                });
-              },
-              icon: Icon((startPlaying) ? Icons.pause : Icons.play_arrow,
-                  size: 50),
-            ),
-            IconButton(
-              onPressed: () {
-                widget.controller.seekTo(Duration(seconds: 1000000));
-              },
-              icon: Icon(Icons.last_page, size: 50),
-            ),
-          ],
-        ),
-        SizedBox(
-          height: 50,
-        ),
-        VideoProgressIndicator(
-          widget.controller,
-          allowScrubbing: true,
-        ),
-      ],
-    );
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  IconButton(
+                    onPressed: () {
+                      widget.controller.seekTo(Duration(seconds: 0));
+                    },
+                    icon: Icon(Icons.first_page, size: 50),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      if (startPlaying)
+                        widget.controller.pause();
+                      else
+                        widget.controller.play();
+                      setState(() {
+                        startPlaying = !startPlaying;
+                      });
+                    },
+                    icon: Icon((startPlaying) ? Icons.pause : Icons.play_arrow,
+                        size: 50),
+                  ),
+                  IconButton(
+                    onPressed: () {
+                      widget.controller.seekTo(Duration(seconds: 1000000));
+                    },
+                    icon: Icon(Icons.last_page, size: 50),
+                  ),
+                ],
+              ),
+            ],
+          );
+        });
   }
 
   Future<void> getPosicion() async {
